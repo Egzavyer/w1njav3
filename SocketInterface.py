@@ -1,5 +1,7 @@
 import socket
 
+SOCKET_BACKLOG = 3
+
 
 class SocketInterface:
     def __init__(self):
@@ -22,6 +24,7 @@ class SocketInterface:
             socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP
         )
         tcpServerSocket.bind((self.localIP, self.tcpServerPort))
+        tcpServerSocket.listen(SOCKET_BACKLOG)
         return tcpServerSocket
 
     def initTCPClientSocket(self):
@@ -40,6 +43,21 @@ class SocketInterface:
     def receiveDataUDP(self):
         data, senderAddr = self.udpSocket.recvfrom(1024)
         return data, senderAddr
+
+    def acceptSocketConnection(self):
+        client, addr = self.tcpServerSocket.accept()
+        return client
+
+    def receiveDataTCP(self, conn: socket):
+        data = conn.recv(1024)
+        return data.decode()
+
+    def connectToSocket(self, ip, port):
+        self.tcpClientSocket.connect((ip, int(port)))
+        print("Connected to: " + ip + "::" + port)
+
+    def sendDataTCP(self, socket: socket, msg: str, destination):
+        socket.sendto(msg.encode(), destination)
 
     def getOwnIP(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

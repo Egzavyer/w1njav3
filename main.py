@@ -1,5 +1,6 @@
 from PeerDiscovery import *
 from SocketInterface import *
+from ConnectionHandler import *
 from Peer import *
 
 
@@ -7,7 +8,9 @@ def main():
     try:
         si = SocketInterface()
         pd = PeerDiscovery(si)
-        peer = Peer(pd)
+        ch = ConnectionHandler(si)
+        peer = Peer(pd, ch)
+
         peer.startPeer()
         while len(peer.pd.peerTable) == 0:
             pass
@@ -16,6 +19,9 @@ def main():
             peerMap = peer.choosePeer()
             peerChoice = input("")
         print("Chosen Peer: " + peerMap[peerChoice])
+        peer.connectToPeer(peerMap[peerChoice])
+        while True:
+            pass
     except KeyboardInterrupt:
         pass
 
