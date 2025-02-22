@@ -1,5 +1,4 @@
 import socket
-import select
 
 
 class SocketInterface:
@@ -8,19 +7,29 @@ class SocketInterface:
         self.tcpClientPort = 8081
         self.tcpServerPort = 8082
         self.localIP = self.getOwnIP()
-        self.initSockets()
+        self.udpSocket = self.initUDPSocket()
+        self.tcpServerSocket = self.initTCPServerSocket()
+        self.tcpClientSocket = self.initTCPClientSocket()
 
-    def initSockets(self):
-        self.udpSocket = socket.socket(
-            socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP
-        )
-        self.udpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        self.udpSocket.bind((self.localIP, self.udpPort))
+    def initUDPSocket(self):
+        udpSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        udpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        udpSocket.bind((self.localIP, self.udpPort))
+        return udpSocket
 
-        self.tcpServerSocket = socket.socket(
+    def initTCPServerSocket(self):
+        tcpServerSocket = socket.socket(
             socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP
         )
-        self.tcpServerSocket.bind((self.localIP, self.tcpServerPort))
+        tcpServerSocket.bind((self.localIP, self.tcpServerPort))
+        return tcpServerSocket
+
+    def initTCPClientSocket(self):
+        tcpClientSocket = socket.socket(
+            socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP
+        )
+        tcpClientSocket.bind((self.localIP, self.tcpClientPort))
+        return tcpClientSocket
 
     def broadcast(self, msg: str):
         self.udpSocket.sendto(msg.encode(), ("255.255.255.255", self.udpPort))

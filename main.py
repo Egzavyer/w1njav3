@@ -1,18 +1,21 @@
-import threading
-
 from PeerDiscovery import *
 from SocketInterface import *
+from Peer import *
 
 
 def main():
     try:
         si = SocketInterface()
         pd = PeerDiscovery(si)
-
-        t1 = threading.Thread(target=pd.discoverPeers)
-        t1.start()
+        peer = Peer(pd)
+        peer.startPeer()
+        while len(peer.pd.peerTable) == 0:
+            pass
+        peer.choosePeer()
+        while True:
+            pass
     except KeyboardInterrupt:
-        t1.join()
+        pass
 
 
 if __name__ == "__main__":
