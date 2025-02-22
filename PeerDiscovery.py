@@ -14,7 +14,6 @@ class PeerDiscovery:
             if peerAddress[0] not in self.peerTable.keys():
                 self.addPeer(peerAddress[0], data.decode()[1:])
                 self.sendResponse(peerAddress)
-                print(self.peerTable)
 
     def broadcastRequest(self):
         self.si.broadcast("1" + str(self.si.tcpServerPort))

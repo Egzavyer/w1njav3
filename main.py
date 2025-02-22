@@ -11,9 +11,11 @@ def main():
         peer.startPeer()
         while len(peer.pd.peerTable) == 0:
             pass
-        peer.choosePeer()
-        while True:
-            pass
+        peerChoice = "r"
+        while peerChoice == "r":
+            peerMap = peer.choosePeer()
+            peerChoice = input("")
+        print("Chosen Peer: " + peerMap[peerChoice])
     except KeyboardInterrupt:
         pass
 

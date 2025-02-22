@@ -11,11 +11,15 @@ class Peer:
         pdThread.start()
 
     def choosePeer(self):
+        peerMap = {}
         self.pd.mutex.acquire()
         i = 0
+        print("Choose a peer to connect to or press 'r' to refresh the list of peers")
         print("+----------------------------+")
         for peer in self.pd.peerTable:
+            peerMap[str(i)] = peer
             print("| " + str(i) + " | " + peer + " |")
             i += 1
         print("+----------------------------+")
         self.pd.mutex.release()
+        return peerMap
