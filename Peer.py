@@ -1,8 +1,9 @@
 from threading import Thread
+from ConnectionHandler import *
 
 
 class Peer:
-    def __init__(self, pd, ch):
+    def __init__(self, pd, ch: ConnectionHandler):
         self.pd = pd
         self.ch = ch
 
@@ -30,3 +31,7 @@ class Peer:
 
     def connectToPeer(self, peerIP: str):
         self.ch.connectTo(peerIP, self.pd.peerTable[peerIP])
+
+    def chooseFile(self):
+        filename = input("Choose the file you wish to send to the peer:")
+        self.ch.sendFile(filename)
