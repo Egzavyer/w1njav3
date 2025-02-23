@@ -16,6 +16,7 @@ class SocketInterface:
     def initUDPSocket(self):
         udpSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         udpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        udpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         udpSocket.bind((self.localIP, self.udpPort))
         return udpSocket
 
@@ -23,6 +24,7 @@ class SocketInterface:
         tcpServerSocket = socket.socket(
             socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP
         )
+        tcpServerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         tcpServerSocket.bind((self.localIP, self.tcpServerPort))
         tcpServerSocket.listen(SOCKET_BACKLOG)
         return tcpServerSocket
@@ -31,6 +33,7 @@ class SocketInterface:
         tcpClientSocket = socket.socket(
             socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP
         )
+        tcpClientSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         tcpClientSocket.bind((self.localIP, self.tcpClientPort))
         return tcpClientSocket
 
@@ -50,14 +53,14 @@ class SocketInterface:
 
     def receiveDataTCP(self, conn: socket):
         data = conn.recv(1024)
-        return data.decode()
+        return data
 
     def connectToSocket(self, ip, port):
         self.tcpClientSocket.connect((ip, int(port)))
         print("Connected to: " + ip + "::" + port)
 
-    def sendDataTCP(self, socket: socket, msg: str, destination):
-        socket.sendto(msg.encode(), destination)
+    def sendDataTCP(self, socket: socket, msg: bytes, destination):
+        socket.sendto(msg, destination)
 
     def getOwnIP(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

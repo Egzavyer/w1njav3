@@ -9,9 +9,9 @@ class ConnectionHandler:
 
     def handleConnection(self):
         # TODO: handle connections in new threads
-        self.receiveFile(
-            "Hello2.txt", self.si.receiveDataTCP(self.si.acceptSocketConnection())
-        )
+        client = self.si.acceptSocketConnection()
+        while 1:
+            self.receiveFile("Hello2.txt", self.si.receiveDataTCP(client))
 
     def connectTo(self, ip, port):
         self.ip = ip
@@ -20,11 +20,22 @@ class ConnectionHandler:
 
     def sendFile(self, filename):
         # TODO: fragment files
-        self.si.sendDataTCP(
-            self.si.tcpClientSocket,
-            self.fh.loadFile(filename),
-            (self.ip, int(self.port)),
-        )
+        data, dataSize = self.fh.loadFile(filename)
+        print(data)
+        print(dataSize)
+        bytesSent, bytesRemaining = 0, dataSize
+        while bytesSent < dataSize:
+            if bytesRemaining <= 576:
+                fragment = data[bytesSent:]
+            else:
+                fragment = data[bytesSent : bytesSent + 576]
+            self.si.sendDataTCP(
+                self.si.tcpClientSocket,
+                fragment,
+                (self.ip, int(self.port)),
+            )
+            bytesSent += len(fragment)
+        print("File Transmission Complete")
 
     def receiveFile(self, filename, data):
         self.fh.writeFile(filename, data)

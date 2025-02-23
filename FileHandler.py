@@ -11,12 +11,13 @@ class FileHandler:
             print(os.path.join(self.folderPath, filename))
 
     def loadFile(self, filename):
-        f = open(self.folderPath + "\\" + filename, "r")
+        f = open(self.folderPath + "/" + filename, "rb")
+        fileSize = os.path.getsize(self.folderPath + "/" + filename)
         fileContent = f.read()
         f.close()
-        return fileContent
+        return fileContent, fileSize
 
     def writeFile(self, filename, data):
-        f = open(self.outputFolder + "\\" + filename, "a")
+        f = open(self.outputFolder + "/" + filename, "ab")
         f.write(data)
         f.close()

@@ -33,5 +33,6 @@ class Peer:
         self.ch.connectTo(peerIP, self.pd.peerTable[peerIP])
 
     def chooseFile(self):
+        self.ch.fh.getAvailableFiles()
         filename = input("Choose the file you wish to send to the peer:")
         self.ch.sendFile(filename)
